@@ -1,4 +1,32 @@
 Rails.application.routes.draw do
+
+  # This defines a route so that when we recieve a GET request with url: /home
+  # Rails will invoke the WelcomeController with 'index' action
+  get "/home" => "welcome#index"
+
+  get "/about" => "welcome#about", as: :about_us
+
+# this defines the 'root' or homepage of our application to go to the WelcomeController
+# with 'index' action. we will have access to the helper methods: root_path and root_url
+  get '/hello/:name/test' => "welcome#index"
+  root 'welcome#index'
+
+  get "/contact_us" => "contact_us#new"
+
+
+  post "/contact_us" => "contact_us#create"
+
+  get  "/questions/new" => "questions#new"
+  post "/questions" => "questions#create", as: :questions
+  get  "/questions/:id" => "questions#show", as: :question
+  get  "/questions" => "questions#index"
+  get  "/questions/:id/edit" => "questions#edit",  as: :edit_question
+
+  # delete "/questions/:id" => "questions#destroy"
+  # get "/questions/:id/edit" => "questions#edit"
+  # get "/questions/:id" => "questions#show"
+  # post "/questions/:id/comments" => "comments#create"
+  # get "/faq" => "home#faq"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

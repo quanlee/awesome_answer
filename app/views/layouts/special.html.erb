@@ -18,12 +18,9 @@
   <%= link_to "About", about_us_path({a: 'hello', b: 123}) %>
   |
   <%= link_to "Contact Us", contact_us_path %>
-  |
-  <%= link_to "New Question", new_question_path %>
-  <hr>
-    <%#= flash[:notice] || flash[:alert] %>
-    <%= notice || alert %>
 
+  <hr>
+  <h1>Special Layout</h1>
   <%= yield %>
 
 </body>
