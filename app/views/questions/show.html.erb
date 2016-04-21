@@ -1,6 +1,37 @@
 <h1><%= @question.title %></h1>
-<p><% @question.body %></p>
+<p><%= @question.body %></p>
+<p>View Count: <%= @question.view_count %></p>
+<p>Created by: <%= @question.user_full_name.titleize %></p>
+<% if can? :update, @question %>
+  <%= link_to "Edit", edit_question_path(@question) %>
+<% end %>
+<% if can? :destroy, @question %>
+  <%= link_to "Delete", question_path(@question),
+                        method: :delete,
+                        data: {confirm: "Are you sure?"} %>
+<% end %>
 
-<%= link_to "Delete", question_path(@question),
-                      method: :delete,
-                      data: {confirm: "Are you sure?"} %>
+  <%= if user_signed_in? && like_for %>
+    <%= link_to "Un-like", question_like_path(@question, like), method: :delete %>
+  <% else %>
+    <%= link_to "Like", question_likes_path(@question), method: :post %>
+  <% end %>
+
+<hr>
+<%= @answer.errors.full_messages.join ", " %>
+<%#= form_for @answer, url: question_answers_path(@question) do |f| %>
+<%= form_for [@question, @answer] do |form_helper|  %>
+  <%= form_helper.text_area :body %>
+  <%= form_helper.submit %>
+<% end %>
+
+<%= @question.answers.each do |ans| %>
+  <%= ans.body %>
+  by: <%= ans.user_full_name %>
+  <% if can? :destroy, ans %>
+    <%= link_to "Delete", question_answer_path(@question, ans),
+                                              data: {confirm: "Are you sure?"},
+                                              method: :delete %>
+    <hr />
+  <% end %>
+<% end %>
