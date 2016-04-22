@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, except: [:show, :index]
+  before_action :authenticate_user!, except: [:index, :show]
   # defining a method in as a `before_action` will make it so that Rails
   # executes that method before executing the action. This is still within
   # the same request cycle
@@ -8,8 +8,13 @@ class QuestionsController < ApplicationController
   # be executed before.
   # in the code below `find_question` will only be executed before: show, edit
   # update and destroy actions
+  # before_action(:find_question, {only: [:show, :edit, :update, :destroy]})
+
   before_action :find_question, only: [:edit, :update, :destroy, :show]
-  before_action :authorize_question, only: [:update, :destroy, :edit]
+  before_action :authorize_question, only: [:edit, :update, :destroy]
+
+  include QuestionsAnswersHelper
+  helper_method :user_like
 
   def new
     # we need to define a new `Question` object in order to be able to
@@ -39,7 +44,7 @@ class QuestionsController < ApplicationController
     # we use Strong Parameters feature of Rails
 
     @question       = Question.new(question_params)
-    @question.user = current_user
+    @question.user  = current_user
     if @question.save
       flash[:notice] = "Question created!"
       # render :show
@@ -84,20 +89,21 @@ class QuestionsController < ApplicationController
 
   private
 
-  def find_question
-    @question = Question.find params[:id]
-  end
-
   def authorize_question
     redirect_to root_path unless can? :manage, @question
   end
 
-  def question_params
-    params.require(:question).permit([:title, :body])
+  def find_question
+    @question = Question.find params[:id]
   end
 
-  def user_like
-    @user_like ||= @question.like_for(current_user)
+  def question_params
+    params.require(:question).permit([:title, :body, :category_id])
   end
-  helper_method :user_like 
+  #
+  # def user_like
+  #   @user_like ||= @question.like_for(current_user)
+  # end
+  # helper_method :user_like
+
 end

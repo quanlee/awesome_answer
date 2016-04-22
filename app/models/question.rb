@@ -9,6 +9,8 @@ class Question < ActiveRecord::Base
   belongs_to :user
   has_many :likes, dependent: :destroy
   has_many :users, through: :likes
+  has_many :votes, dependent: :destroy
+  has_many :voting_users, through: :votes, source: :user
   #belongs_to :category  # still needs to be implemented
 
   # validates_presence_of :title # deprecated > likely to be removed in Rails 5
@@ -52,9 +54,16 @@ class Question < ActiveRecord::Base
   end
 
   def like_for(user)
-    likes.find_by_user_id user 
+    likes.find_by_user_id user
   end
 
+  def vote_for(user)
+    votes.find_by_user_id user
+  end
+
+  def vote_value
+    vote.up_count - vote.down_count 
+  end
   private
 
   def titleize_title

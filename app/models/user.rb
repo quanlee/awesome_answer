@@ -13,12 +13,14 @@ class User < ActiveRecord::Base
   has_many :answers, dependent: :nullify
 
   has_many :likes, dependent: :destroy
+  has_many :votes, dependent: :destroy
+  has_many :voted_questions, through: :votes, source: :question
   # we're using 'source' option in here because we used 'liked_questions' instead
   # of 'questions' (convention) because we used 'has_many :questions' earlier.
   # inside the 'like' model there is no association called 'liked_question'
   # so we have to specify the source for rails to know how to match it
 
-  has_many :liked_questions, through: :likes, source: :question # identifies the questions liked by the user 
+  has_many :liked_questions, through: :likes, source: :question # identifies the questions liked by the user
 
   VALID_EMAIL_REGEX = /\A([\w+\-]\.?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
   validates :email, uniqueness: true, presence: true, format: VALID_EMAIL_REGEX
