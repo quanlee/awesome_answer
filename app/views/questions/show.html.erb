@@ -11,8 +11,8 @@
                         data: {confirm: "Are you sure?"} %>
 <% end %>
 
-  <%= if user_signed_in? && like_for %>
-    <%= link_to "Un-like", question_like_path(@question, like), method: :delete %>
+  <% if user_signed_in? && @question.like_for(session[:user_id]) %>
+    <%= link_to "Un-like", question_like_path(@question, @question.like_for(session[:user_id])), method: :delete %>
   <% else %>
     <%= link_to "Like", question_likes_path(@question), method: :post %>
   <% end %>
